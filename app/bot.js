@@ -18,4 +18,3 @@ client.once(Events.ClientReady, (readyClient)=>{
 // LOGIN DO BOT
 client.login(token);    
 
-// VER PRO TOKEN N APARECER DPS, SUBI NO GIT E DEIXEI PRIVADO
