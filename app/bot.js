@@ -76,7 +76,5 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 });
 
-// O CODIGO AQUI  TA MAIS COMPLETO MAS FAZ A MSM MERDA PAREI AQUI: https://discordjs.guide/legacy/app-creation/handling-commands
-
 // LOGIN DO BOT
 client.login(token);
