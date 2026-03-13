@@ -78,3 +78,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 // LOGIN DO BOT
 client.login(token);
+
