@@ -13,12 +13,6 @@ const {token} = require('./token/config.json')
 // CRIAÇÃO DO BOT
 // GATEWAY RECEBE EVENTOS REF. A SERVIDORES -GUILDS-SERVIDOR DO DISCORD-
 const client = new Client({intents: [GatewayIntentBits.Guilds]});
-// CASO O BOT FIQUE ONLINE, EXECUTE A FUNCAO
-// ONCE FAZ COM QUE EXECUTE 1 VEZ
-client.once(Events.ClientReady, (readyClient)=>{
-    // eslint-disable-next-line no-undef
-    console.log(`BOT LOGADO ${readyClient.user.tag}`);
-});
   
 // CRIA UM LOCAL PRA GUARDA COMANDOS
 client.commands = new Collection(); 
@@ -51,30 +45,24 @@ for (const folder of commandFolders) {
 	}
 }
 
-// QUANDO HÁ INTERAÇÃO COM O BOT, É EXECUTADO ESSA FUNÇÃO
-client.on(Events.InteractionCreate, async (interaction) => {
+// CAMINHO DA PASTA EVENTS
+const eventsPath = path.join(__dirname, '../events');
 
-	// CASO NAO SEJA UM COMANDO SLASH, ELE PARA
-	if (!interaction.isChatInputCommand()) return;
-    // client.commands.get - PROCURA NO ARMAZENAMENTO
-    // interaction.commandName - RECEBE O NOME DO COMANDO USADO
-	const command = client.commands.get(interaction.commandName);
+// LÊ OS ARQUIVOS DA PASTA
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-	// VERIFICA SE O COMANDO EXISTE
-	if (!command) return;
+for (const file of eventFiles) {
 
-	// TENTA EXECUTAR O COMANDO
-	try {
-		// EXECUTA O COMANDO
-		await command.execute(interaction);
-		// CAPURA ERRO
-	} catch (error) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
 
-		console.error(error);
-
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
 	}
 
-});
+}
 
 // LOGIN DO BOT
 client.login(token);
